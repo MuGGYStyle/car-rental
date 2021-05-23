@@ -102,16 +102,16 @@
                 
                   <div class="form-group col-md-3">
                     <label for="cf-3">Аялах Өдөр</label>
-                    <input type="text" id="cf-3" placeholder="Өдрөө Сонго" name="start_date" value="{{ $start_date ?$start_date :null }}" class="form-control datepicker px-3">
+                    <input type="text" id="cf-3" autocomplete="off" placeholder="Өдрөө Сонго" name="start_date" value="{{ $start_date ?$start_date :null }}" class="form-control datepicker px-3">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="cf-4">Буцаах Өдөр</label>
-                    <input type="text" id="cf-4" placeholder="Өдрөө Сонго" name="end_date" value="{{ $end_date ?$end_date :null }}" class="form-control datepicker px-3">
+                    <input type="text" id="cf-4" autocomplete="off" placeholder="Өдрөө Сонго" name="end_date" value="{{ $end_date ?$end_date :null }}" class="form-control datepicker px-3">
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-6">
-                    <button type="submit" class="btn btn-primary btn-primary">Болсон</button>
+                    <button type="submit" class="btn btn-primary btn-primary">Хайх</button>
                   </div>
                 </div>
               </form>
@@ -123,31 +123,23 @@
     <div class="site-section bg-light">
       <div class="container">
         <div class="row">
-          @foreach($cars as $car)
+          @foreach($car_groups as $car)
             <div class="col-lg-4 col-md-6 mb-4">
               <div class="item-1">
                   <a href="#"><img src="{{$car->photo_url}}" alt="Image" class="img-fluid"></a>
                   <div class="item-1-contents">
                     <div class="text-center">
                     <h3><a href="#">{{ $car->name }}</a></h3>
-                    <div class="rent-price"><span>1 Өдөр/</span>{{ $car->price_per_day }}₮</div>
+                    <!-- <div class="rent-price"><span>1 Өдөр/</span>{{ $car->price_per_day }}₮</div> -->
                     </div>
                     <ul class="specs">
                       <li>
-                        <span>Түлш Зарцуулалт</span>
-                        <span class="spec">100км/{{ $car->fuel }}л</span>
+                        <span>1 өдөр</span>
+                        <span class="spec">{{ number_format($car->price_per_day) }}₮</span>
                       </li>
                       <li>
-                        <span>Суудал</span>
-                        <span class="spec">{{ $car->seat }}</span>
-                      </li>
-                      <li>
-                        <span>Араа</span>
-                        <span class="spec">{{ $car->transmission_name }}</span>
-                      </li>
-                      <li>
-                        <span>Үйлдвэрлэсэн Он</span>
-                        <span class="spec">{{ $car->uild_on }}</span>
+                        <span>Нийт</span>
+                        <span class="spec">{{ number_format($car->price_per_day * $total_day) }}₮</span>
                       </li>
                     </ul>
                     <div class="d-flex action">
@@ -157,9 +149,6 @@
                 </div>
             </div>
           @endforeach
-          <div class="col-12">
-            {{ $cars->links('vendor.pagination.custom') }}
-          </div>
         </div>
         </div>
       </div>
@@ -194,7 +183,7 @@
 
     <script>
       $(document).ready(function () {
-        var cars = {!! json_encode($cars) !!}
+        var cars = {!! json_encode($total_day) !!}
         console.log(cars);
       });
     </script>

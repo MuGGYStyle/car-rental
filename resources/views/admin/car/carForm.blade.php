@@ -39,8 +39,36 @@
               @endif
               {{ csrf_field() }}
               
+              <div class="form-group  row"><label class="col-sm-2 col-form-label">Улсын дугаар</label>
+                <div class="col-sm-10"><input type="text" class="form-control" name="uls_dugaar" value="{{$mode=='edit' ?$car->uls_dugaar :null}}"></div>
+              </div>
+
+              <div class="hr-line-dashed"></div>
               <div class="form-group  row"><label class="col-sm-2 col-form-label">Нэр</label>
                 <div class="col-sm-10"><input type="text" class="form-control" name="name" value="{{$mode=='edit' ?$car->name :null}}"></div>
+              </div>
+
+              <div class="hr-line-dashed"></div>
+              <div class="form-group row"><label class="col-sm-2 col-form-label">Ангилал</label>
+                <div class="col-sm-10">
+                  <select class="form-control" name="category_id" id="category_select">
+                    @foreach($categories  as $category)
+                      @if($mode=='edit')
+                        <option value="{{$category->id}}" {{$category->id === $car->carGroup->category_id ?'selected' :''}}>{{$category->name}}</option>
+                      @else
+                        <option value="{{$category->id}}">{{$category->name}}</option>
+                      @endif
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+
+              <div class="hr-line-dashed"></div>
+              <div class="form-group row"><label class="col-sm-2 col-form-label">Бүлэг</label>
+                <div class="col-sm-10">
+                  <select class="form-control" name="car_group_id" id="car_group_select">
+                  </select>
+                </div>
               </div>
 
               <div class="hr-line-dashed"></div>
@@ -92,8 +120,9 @@
 
               <div class="form-group row">
                 <div class="col-sm-4 col-sm-offset-2">
-                  <button class="btn btn-white btn-sm" type="button" onclick="backRedirect()">Cancel</button>
-                  <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
+                  <button class="btn btn-white btn-sm" type="button" onclick="backRedirect()">Буцах</button>
+                  <button class="btn btn-primary btn-sm" type="submit">Хадгалах</button>
+                  <button class="btn btn-danger btn-sm deleteRecord" data-id="{{$car->id}}" type="button">Устгах</button>
                 </div>
               </div>
             </form>
@@ -111,8 +140,61 @@
 
 @push('scripts')
 <script  type="text/javascript">
+  var mode = {!! json_encode($mode) !!};
+  var all_car_groups = {!! json_encode($car_groups) !!};
+  var edit_car_group = '';
+  var all_categories = {!! json_encode($categories) !!};
+
   $(document).ready(function () {
+    if (mode == 'edit') {
+      edit_car_group = {!! json_encode($car->carGroup) !!};
+      generateGroupsOption(edit_car_group.category_id);
+    } else {
+      generateGroupsOption(all_categories[0].id);
+    }
+
+    
+
+    $(".deleteRecord").click(function() {
+      var result = confirm("Устгахад итгэлтэй байна?");
+      if (result) {
+        var id = $(this).data('id');
+        var token = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+          url: "/admin/car/"+id,
+          type: 'DELETE',
+          data: {
+            'id': id,
+            '_token': token
+          },
+          success: function() {
+            backRedirect();
+          }
+        });   
+      }
+    });
+
+    $('#category_select').change(function() {
+      let category_id = $(this).val();
+      generateGroupsOption(category_id);
+    });
   });
+
+  function generateGroupsOption(category_id) {
+    let car_group_select = document.getElementById('car_group_select');
+    car_group_select.innerHTML = '';
+    all_car_groups.forEach(function(el) {
+      if (el.category_id == category_id) {
+        let html = ``;
+        if (mode == 'edit') {
+          html = `<option value="${el.id}" ${el.id === edit_car_group.id ?'selected' :''}>${el.name}</option>`;
+        } else {
+          html = `<option value="${el.id}">${el.name}</option>`;
+        }
+        car_group_select.insertAdjacentHTML("beforeend", html);
+      }
+    });
+  }
 
   function backRedirect() {
     let url = "{{ URL::previous() }}";

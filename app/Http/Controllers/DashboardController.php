@@ -25,4 +25,22 @@ class DashboardController extends Controller
 
         return redirect('/admin');
     }
+
+    public function orderDestroy($id)
+    {
+        if (Order::destroy($id))
+		{
+			return response()->json([
+				'title' => 'Deleted!',
+				'body' => '',
+				'orderId' => $id
+			]);
+		} else {
+			return response()->json([
+				'title' => 'Failed!',
+				'body' => '',
+				'orderId' => ''
+			]);
+		}
+    }
 }

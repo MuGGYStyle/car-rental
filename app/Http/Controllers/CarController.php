@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Car;
 use App\CarTransmission;
+use App\Category;
+use App\CarGroup;
 use App\Helpers\ImageHelper as HelperImage;
 
 class CarController extends Controller
@@ -18,8 +20,16 @@ class CarController extends Controller
     public function create()
     {
         $car = new Car;
+        $categories = Category::all();
+        $car_groups = CarGroup::all();
         $carTransmissions = CarTransmission::all();
-		return view('admin.car.carForm', ['mode' => 'create', 'car' => $car, 'carTransmissions' => $carTransmissions]);
+		return view('admin.car.carForm', [
+            'mode' => 'create', 
+            'car' => $car, 
+            'carTransmissions' => $carTransmissions,
+            'categories' => $categories, 
+            'car_groups' => $car_groups
+            ]);
     }
 
     public function store(Request $request)
@@ -33,6 +43,8 @@ class CarController extends Controller
         $car = new Car;
     
         $car->name = $input['name'];
+        $car->uls_dugaar = $input['uls_dugaar'];
+        $car->car_group_id = $input['car_group_id'];
         $car->car_trans_id = $input['car_trans_id'];
         $car->fuel = $input['fuel'];
         $car->seat = $input['seat'];
@@ -51,7 +63,15 @@ class CarController extends Controller
     {
         $car = Car::find($id);
         $carTransmissions = CarTransmission::all();
-		return view('admin.car.carForm', ['mode' => 'edit', 'car' => $car, 'carTransmissions' => $carTransmissions]);
+        $categories = Category::all();
+        $car_groups = CarGroup::all();
+        return view('admin.car.carForm', [
+            'mode' => 'edit', 
+            'car' => $car, 
+            'carTransmissions' => $carTransmissions,
+            'categories' => $categories, 
+            'car_groups' => $car_groups
+            ]);
     }
 
     public function update(Request $request, $id)
@@ -68,6 +88,8 @@ class CarController extends Controller
 
 		$car = Car::findOrFail($id);
         $car->name = $input['name'];
+        $car->uls_dugaar = $input['uls_dugaar'];
+        $car->car_group_id = $input['car_group_id'];
         $car->car_trans_id = $input['car_trans_id'];
         $car->fuel = $input['fuel'];
         $car->seat = $input['seat'];
@@ -84,7 +106,6 @@ class CarController extends Controller
 
     public function destroy($id)
     {
-        
         if (Car::destroy($id))
 		{
 			return response()->json([

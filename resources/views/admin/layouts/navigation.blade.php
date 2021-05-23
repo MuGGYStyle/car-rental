@@ -24,6 +24,12 @@
       <li class="{{ Ekko::areActiveRoutes(['admin.car.*']) }}">
         <a href="{{ url('/admin/car') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Cars</span> </a>
       </li>
+      <li class="{{ Ekko::areActiveRoutes(['admin.car_group.*']) }}">
+        <a href="{{ url('/admin/car_group') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Car Groups</span> </a>
+      </li>
+      <li class="{{ Ekko::areActiveRoutes(['admin.category.*']) }}">
+        <a href="{{ url('/admin/category') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Categories</span> </a>
+      </li>
       <!-- <li class="{{ Ekko::areActiveRoutes(['admin.user.*']) }}">
         <a href="{{ url('/admin/user') }}"><i class="fa fa-th-large"></i> <span class="nav-label">User</span> </a>
       </li> -->

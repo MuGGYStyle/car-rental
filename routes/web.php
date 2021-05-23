@@ -32,7 +32,8 @@ Route::middleware('auth')->group(function() {
 	// MIDDLEWARE ADMIN START
 	Route::middleware('Admin')->group(function() {
 		Route::get('/admin', ['as' => 'admin', 'uses' => 'DashboardController@index']);
-        Route::get('/admin/status/{id}/{status}', ['as' => 'admin.change.status', 'uses' => 'DashboardController@changeStatus']);
+		Route::get('/admin/status/{id}/{status}', ['as' => 'admin.change.status', 'uses' => 'DashboardController@changeStatus']);
+		Route::delete('/admin/order/{id}', ['as' => 'admin.order.destroy', 'uses' => 'DashboardController@orderDestroy']);
 
 		Route::resource('/admin/role', 'RoleController', ['names' => [
 			'index'  => 'admin.role.index',
@@ -62,6 +63,26 @@ Route::middleware('auth')->group(function() {
 			'show'   => 'admin.car.show',
 			'update' => 'admin.car.update',
 			'destroy'=> 'admin.car.destroy',
+		]]);
+
+		Route::resource('/admin/category', 'CategoryController', ['names' => [
+			'index'  => 'admin.category.index',
+			'create' => 'admin.category.create',
+			'edit'   => 'admin.category.edit',
+			'store'  => 'admin.category.store',
+			'show'   => 'admin.category.show',
+			'update' => 'admin.category.update',
+			'destroy'=> 'admin.category.destroy',
+		]]);
+
+		Route::resource('/admin/car_group', 'CarGroupController', ['names' => [
+			'index'  => 'admin.car_group.index',
+			'create' => 'admin.car_group.create',
+			'edit'   => 'admin.car_group.edit',
+			'store'  => 'admin.car_group.store',
+			'show'   => 'admin.car_group.show',
+			'update' => 'admin.car_group.update',
+			'destroy'=> 'admin.car_group.destroy',
 		]]);
 	});
 	// MIDDLEWARE ADMIN END

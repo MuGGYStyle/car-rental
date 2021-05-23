@@ -98,16 +98,16 @@
                 
                   <div class="form-group col-md-3">
                     <label for="cf-3">Аялах Өдөр</label>
-                    <input type="text" id="cf-3" placeholder="Өдрөө Сонго" name="start_date" class="form-control datepicker px-3">
+                    <input type="text" id="cf-3" autocomplete="off" placeholder="Өдрөө Сонго" name="start_date" value="{{ $start_date}}" class="form-control datepicker px-3">
                   </div>
                   <div class="form-group col-md-3">
                     <label for="cf-4">Буцаах Өдөр</label>
-                    <input type="text" id="cf-4" placeholder="Өдрөө Сонго" name="end_date" class="form-control datepicker px-3">
+                    <input type="text" id="cf-4" autocomplete="off" placeholder="Өдрөө Сонго" name="end_date" value="{{ $end_date}}" class="form-control datepicker px-3">
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-6">
-                    <button type="submit" class="btn btn-primary btn-primary">Болсон</button>
+                    <button type="submit" class="btn btn-primary btn-primary">Хайх</button>
                   </div>
                 </div>
               </form>
@@ -118,7 +118,7 @@
 
     
 
-    <div class="site-section bg-light">
+    <!-- <div class="site-section bg-light">
       <div class="container">
         <div class="row">
           <div class="col-lg-3">
@@ -133,45 +133,13 @@
           <div class="col-lg-9">
 
             <div class="nonloop-block-13 owl-carousel">
-                @foreach($cars as $car)
-                    <div class="item-1">
-                        <a href="#"><img src="{{$car->photo_url}}" alt="Image" class="img-fluid"></a>
-                        <div class="item-1-contents">
-                        <div class="text-center">
-                        <h3><a href="#">{{ $car->name }}</a></h3>
-                        <div class="rent-price"><span>{{ $car->price_per_day }}₮/</span>1 Өдөр</div>
-                        </div>
-                        <ul class="specs">
-                            <li>
-                            <span>Түлш зарцуулалт</span>
-                            <span class="spec">100км/{{ $car->fuel }}л</span>
-                            </li>
-                            <li>
-                            <span>Суудлын тоо</span>
-                            <span class="spec">{{ $car->seat }}</span>
-                            </li>
-                            <li>
-                            <span>Араа</span>
-                            <span class="spec">{{ $car->transmission_name }}</span>
-                            </li>
-                            <li>
-                            <span>Үйлдвэрлэсэн он</span>
-                            <span class="spec">{{ $car->uild_on }} он</span>
-                            </li>
-                        </ul>
-                        <div class="d-flex action">
-                            <a href="/contact/{{ $car->id }}" class="btn btn-primary">Түрээслэх</a>
-                        </div>
-                        </div>
-                    </div>
-                @endforeach
 
             </div>
             
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="site-section section-3" style="background-image: url('assets/front-end/images/hero_2.jpg');">
       <div class="container">

@@ -79,20 +79,20 @@
             <div class="row align-items-center">
               <div class="col-lg-5">
                 <div class="feature-car-rent-box-1">
-                  <h3>{{ $car->name }}</h3>
+                  <h3>{{ $car->name }} | {{ $car->uls_dugaar }}</h3>
                   <ul class="list-unstyled">
                     <li>
-                      <span>Түлш Зарцуулалт</span>
+                      <span>Түлш зарцуулалт</span>
                       <span class="spec">100км/{{ $car->fuel }}л</span>
                     </li>
                     <li>
-                      <span>суудлын тоо</span>
+                      <span>Суудлын тоо</span>
                       <span class="spec">{{ $car->seat }}</span>
                     </li>
                     
                     <li>
                       <span>Араа</span>
-                      <span class="spec">{{ $car->transmission->name }}</span>
+                      <span class="spec">{{ $car->transmission }}</span>
                     </li>
                     <li>
                       <span>Үйлдвэрлэсэн он</span>
@@ -100,7 +100,10 @@
                     </li>
                   </ul>
                   <div class="d-flex align-items-center bg-light p-3">
-                    <span>1 Өдөр / {{ $car->price_per_day }}₮</span>
+                    <span>1 Өдөр / {{ number_format($car_group->price_per_day) }}₮</span>
+                  </div>
+                  <div class="d-flex align-items-center bg-light p-3">
+                    <span>{{ $total_day }} Өдөр / {{ number_format($car_group->price_per_day * $total_day) }}₮</span>
                   </div>
                 </div>
               </div>

@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Car;
 use App\Order;
 use App\CarTransmission;
+use App\CarGroup;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -19,68 +21,67 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $cars = \DB::table('cars')
-                ->select(\DB::raw('cars.*, car_transmission.name as transmission_name'))
-                ->leftJoin('orders','orders.car_id','=','cars.id')
-                ->leftJoin('car_transmission','car_transmission.id','=','cars.car_trans_id')
-                ->whereNull('orders.car_id')
-                ->orWhere(function($query) {
-                    $query->where('orders.status', '=', 'new');
-                    $query->orWhere('orders.status', '=', 'received');
-                })
-                ->groupBy('cars.id')
-                ->orderBy('cars.id')
-                ->paginate(6);
-        return view('index', ['cars' => $cars]);
+        return view('index', [
+            'start_date' => date('m/d/Y', strtotime(Carbon::now())),
+            'end_date' => date('m/d/Y', strtotime(Carbon::now()->addDays(1)))
+            ]);
     }
 
     public function getCars(Request $req)
     {
+        $input = $req->all();
         if($req->filled('start_date') && $req->filled('end_date')) {
-            $input = $req->all();
             $input['start_date'] = date('Y-m-d', strtotime($input['start_date']));
             $input['end_date'] = date('Y-m-d', strtotime($input["end_date"]));
-            $cars = \DB::table('cars')
-                ->select(\DB::raw('cars.*, car_transmission.name as transmission_name'))
-                ->leftJoin('orders','orders.car_id','=','cars.id')
-                ->leftJoin('car_transmission','car_transmission.id','=','cars.car_trans_id')
-                ->whereNull('orders.car_id')
-                ->orWhere(function($query) use ($input) {
-                    $query->where('orders.end_date', '<', $input['start_date']);
-                    $query->orWhere('orders.start_date', '>', $input['end_date']);
-                })
-                ->groupBy('cars.id')
-                ->orderBy('cars.id')
-                ->paginate(6);
-            $queryArgs = $req->only(['start_date', 'end_date']);
-            $cars->appends($queryArgs);
-            return view('cars', ['cars' => $cars, 'start_date' => $input['start_date'], 'end_date' => $input['end_date']]);
         } else {
-            $cars = \DB::table('cars')
-                ->select(\DB::raw('cars.*, car_transmission.name as transmission_name'))
-                ->leftJoin('orders','orders.car_id','=','cars.id')
-                ->leftJoin('car_transmission','car_transmission.id','=','cars.car_trans_id')
-                ->whereNull('orders.car_id')
-                ->orWhere(function($query) {
-                    $query->where('orders.status', '=', 'new');
-                    $query->orWhere('orders.status', '=', 'received');
-                })
-                ->groupBy('cars.id')
-                ->orderBy('cars.id')
-                ->paginate(6);
-            return view('cars', ['cars' => $cars, 'start_date' => null, 'end_date' => null]);
+            $input['start_date'] = date('Y-m-d', strtotime(Carbon::now()));
+            $input['end_date'] = date('Y-m-d', strtotime(Carbon::now()->addDays(1)));
         }
+        $earlier = new \DateTime($input['start_date']);
+        $later = new \DateTime($input['end_date']);
+
+        $total_day = $later->diff($earlier)->format("%a");
+
+        $car_groups = \DB::select('
+        SELECT g.*, COUNT(c.id) as cars, COUNT(o.id) as orders FROM 
+        car_group g 
+        left join cars c on g.id=c.car_group_id 
+        left join orders o on c.id=o.car_id 
+        where c.id is not null and 
+        (o.id is null or ((o.start_date not between ? and ?) and (o.end_date not between ? and ?) and o.start_date > ? or o.end_date < ?)) group by g.id', 
+            [$input['start_date'], $input['end_date'], $input['start_date'], $input['end_date'], $input['end_date'], $input['start_date']]);
+        return view('cars', [
+                                'car_groups' => $car_groups, 
+                                'start_date' => date('m/d/Y', strtotime($input['start_date'])), 
+                                'end_date' => date('m/d/Y', strtotime($input['end_date'])),
+                                'total_day' => $total_day
+                            ]);
     }
 
     public function contact(Request $req, $id)
     {
-        $car = Car::find($id);
-        if($req->filled('start_date') && $req->filled('end_date')) {
-            $input = $req->all();
-            return view('contact', ['car' => $car, 'start_date' => $input['start_date'], 'end_date' => $input['end_date']]);
-        } else {
-            return view('contact', ['car' => $car, 'start_date' => null, 'end_date' => null]);
-        }
+        $input = $req->all();
+        $input['start_date'] = date('Y-m-d', strtotime($input['start_date']));
+        $input['end_date'] = date('Y-m-d', strtotime($input["end_date"]));
+        $car_group = CarGroup::find($id);
+        $earlier = new \DateTime($input['start_date']);
+        $later = new \DateTime($input['end_date']);
+        $total_day = $later->diff($earlier)->format("%a");
+        $cars = \DB::select('
+        select c.*, ct.name as transmission from cars c 
+        left join car_transmission ct on ct.id=c.car_trans_id 
+        left join orders o on c.id=o.car_id 
+        where c.car_group_id=? and 
+        (o.id is null or ((o.start_date not between ? and ?) and (o.end_date not between ? and ?) and o.start_date > ? or o.end_date < ?)) group by c.id LIMIT 1',
+            [$id, $input['start_date'], $input['end_date'], $input['start_date'], $input['end_date'], $input['end_date'], $input['start_date']]
+        );
+        return view('contact', [
+            'car' => $cars[0], 
+            'car_group' => $car_group, 
+            'start_date' => $input['start_date'], 
+            'end_date' => $input['end_date'],
+            'total_day' => $total_day
+            ]);
     }
 
     public function order(Request $request ,$id)

@@ -90,7 +90,8 @@
             <thead>
               <tr>
                 <th data-toggle="true">Хэрэглэгч</th>
-                <th data-toggle="true">Машин</th>
+                <th data-toggle="true">Машин Бүлэг</th>
+                <th data-toggle="true">Улсын дугаар</th>
                 <th>Эхлэх хугацаа</th>
                 <th>Дуусах хугацаа</th>
                 <th>Төлөв</th>
@@ -105,7 +106,8 @@
               @foreach($orders as $order)
               <tr>
                 <td>{{ $order->c_fname }}</td>
-                <td>{{ $order->car->name }}</td>
+                <td>{{ $order->car->carGroup->name }}</td>
+                <td>{{ $order->car->uls_dugaar }}</td>
                 <td>{{ $order->start_date }}</td>
                 <td>{{ $order->end_date }}</td>
                 <td>
@@ -132,6 +134,7 @@
                       <li><a class="dropdown-item" href="{{ route('admin.change.status', ['id'=>$order->id, 'status'=>'handed']) }}">Хүлээлгэн өгсөн</a></li>
                       <li><a class="dropdown-item" href="{{ route('admin.change.status', ['id'=>$order->id, 'status'=>'received']) }}">Хүлээн авсан</a></li>
                     </ul>
+                    <button class="btn btn-danger btn-xs deleteRecord" data-id="{{$order->id}}">Устгах</button>
                   </div>
                 </td>
               </tr>
@@ -161,6 +164,24 @@
 <script src="{{ asset('assets/js/plugins/footable/footable.all.min.js') }}"></script>
 <script>
   $(document).ready(function () {
+    $(".deleteRecord").click(function() {
+      var result = confirm("Устгахад итгэлтэй байна?");
+      if (result) {
+        var id = $(this).data('id');
+        var token = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+          url: "/admin/order/"+id,
+          type: 'DELETE',
+          data: {
+            'id': id,
+            '_token': token
+          },
+          success: function() {
+            location.reload();
+          }
+        });   
+      }
+    });
     $(".footable").footable();
   });
 </script>
