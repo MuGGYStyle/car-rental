@@ -180,7 +180,10 @@
                 </div>
                 <div class="form-group row">
                   <div class="col-md-6 mr-auto">
-                    <input type="submit" class="btn btn-block btn-primary text-white py-3 px-5" value="Илгэээх">
+                    <input 
+                      type="button" 
+                      class="btn btn-block btn-primary text-white py-3 px-5" 
+                      data-toggle="modal" data-target="#exampleModal" value="Илгээх">
                   </div>
                 </div>
               </div>
@@ -203,12 +206,27 @@
         </div>
       </div>
 
-
-    
-
-
-
-    </div>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">АВТОМАШИН ТҮРЭЭСЛЭХ  ГЭРЭЭ</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <!-- Энэ дотор хүссэнээ хийнэ  -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Хаах</button>
+              <button type="submit" class="btn btn-primary">Зөвшөөрөх</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
 
     <script src="{{ asset('assets/front-end/js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('assets/front-end/js/popper.min.js') }}"></script>

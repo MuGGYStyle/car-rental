@@ -30,9 +30,9 @@
       <li class="{{ Ekko::areActiveRoutes(['admin.category.*']) }}">
         <a href="{{ url('/admin/category') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Categories</span> </a>
       </li>
-      <!-- <li class="{{ Ekko::areActiveRoutes(['admin.user.*']) }}">
-        <a href="{{ url('/admin/user') }}"><i class="fa fa-th-large"></i> <span class="nav-label">User</span> </a>
-      </li> -->
+      <li class="{{ Ekko::areActiveRoutes(['admin.report.*']) }}">
+        <a href="{{ url('/admin/report') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Тайлан</span> </a>
+      </li>
     </ul>
 
   </div>

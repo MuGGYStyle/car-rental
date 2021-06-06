@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function() {
 		Route::get('/admin/status/{id}/{status}', ['as' => 'admin.change.status', 'uses' => 'DashboardController@changeStatus']);
 		Route::delete('/admin/order/{id}', ['as' => 'admin.order.destroy', 'uses' => 'DashboardController@orderDestroy']);
 
+		Route::get('/admin/report', ['as' => 'admin.report.index', 'uses' => 'ReportController@index']);
+
 		Route::resource('/admin/role', 'RoleController', ['names' => [
 			'index'  => 'admin.role.index',
 			'create' => 'admin.role.create',
